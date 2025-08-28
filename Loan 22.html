@@ -178,7 +178,7 @@
 
 <script>
 const CONFIG = {
-  SCRIPT_URL: "https://script.google.com/macros/s/AKfycbxVyR1aanjwG-n55x0-s6GTZ-znWJXMJfNs9b4BN9HS_fxQ7GCYr3_p2k0jZtcC2jYIsA/exec", // यहाँ अपना Apps Script WebApp URL डालें
+  SCRIPT_URL: "https://script.google.com/macros/s/AKfycbzPIfF2hrWNYPIR5MAJHu7hGNAvQYbZIWAJ2YepaU940nvZF-RAOJKksDxI6TlLwJkh7A/exec",
   SECURITY_CODE: "R@dha9754",
   SHEET_TIMEZONE: "Asia/Kolkata"
 };
@@ -215,7 +215,7 @@ function renderTable(tbody, table, emptyDiv, history){
     const tr = document.createElement('tr');
     tr.innerHTML = `
       <td>${it.date||''}</td>
-      <td><span class="status-dot" style="background:${it.type==='Deposit'?'#0a7c2f':'#a60000'}"></span>${it.type}</td>
+      <td><span class="status-dot" style="background:${it.type==='Deposit'||it.type==='Loan Amount'?'#0a7c2f':'#a60000'}"></span>${it.type}</td>
       <td class="right">${fmt(it.amount)}</td>
       <td class="right">${fmt(it.balance)}</td>
       <td>${it.by||''}</td>`;
@@ -224,25 +224,22 @@ function renderTable(tbody, table, emptyDiv, history){
   return rows.at(-1)?.balance || 0;
 }
 
-function localKey(acc){ return `ledger_${acc}`; }
-function localLoad(acc){ try{ return JSON.parse(localStorage.getItem(localKey(acc))||'[]'); }catch(e){ return []; } }
-function localSave(acc, arr){ localStorage.setItem(localKey(acc), JSON.stringify(arr)); }
-
 async function gsFetchHistory(account){
   try{
     const url = CONFIG.SCRIPT_URL + `?fn=getHistory&account=${encodeURIComponent(account)}`;
     const res = await fetch(url, { method:"GET", mode:"cors" });
     if(!res.ok) throw new Error('Fetch failed');
-    return (await res.json())?.history || [];
+    const data = await res.json();
+    return data.history?.map(r=>({account:r[0], type:r[1], amount:r[2], date:r[3], by:r[4]})) || [];
   }catch(e){
     console.error("Fetch error:", e);
-    return null;
+    return [];
   }
 }
 
 async function gsAppend(account, type, amount, by){
   try{
-    const payload = {fn:'addTransaction', account, type, amount: Number(amount), by, date: nowIST()};
+    const payload = {fn:'addTransaction', account, type, amount:Number(amount), by, date: nowIST()};
     const res = await fetch(CONFIG.SCRIPT_URL, {
       method:'POST',
       mode:"cors",
@@ -258,27 +255,18 @@ async function gsAppend(account, type, amount, by){
 }
 
 async function loadCustomerHistory(acc){
-  let history = await gsFetchHistory(acc);
-  if(!history || !history.length){
-    history = localLoad(acc);
-  } else {
-    localSave(acc, history);
-  }
+  const history = await gsFetchHistory(acc);
   const bal = renderTable($('#historyTable tbody'), $('#historyTable'), $('#noData'), history);
   $('#cBalance').value = fmt(bal);
 }
 
 async function loadAgentHistory(acc){
-  let history = await gsFetchHistory(acc);
-  if(!history || !history.length){
-    history = localLoad(acc);
-  } else {
-    localSave(acc, history);
-  }
+  const history = await gsFetchHistory(acc);
   const bal = renderTable($('#aHistoryTable tbody'), $('#aHistoryTable'), $('#aNoData'), history);
   return bal;
 }
 
+// Customer Panel
 $('#btnCheck').addEventListener('click', async ()=>{
   const acc = $('#cAccount').value.trim();
   const code = $('#cCode').value.trim();
@@ -292,16 +280,18 @@ $('#btnPrint').addEventListener('click', ()=>window.print());
 $('#btnExport').addEventListener('click', ()=>{
   const acc = $('#cAccount').value.trim();
   if(!acc){ alert('पहले Account Number डालें'); return; }
-  const hist = localLoad(acc);
-  const rows = [['Account','DateTime','Type','Amount','By']].concat(hist.map(h=>[acc,h.date,h.type,h.amount,h.by]));
-  const csv = rows.map(r=>r.join(',')).join('\n');
-  const blob = new Blob([csv], {type:'text/csv'});
-  const a = document.createElement('a');
-  a.href = URL.createObjectURL(blob);
-  a.download = `${acc}_history.csv`;
-  a.click();
+  gsFetchHistory(acc).then(hist=>{
+    const rows = [['Account','Type','Amount','Date','By']].concat(hist.map(h=>[acc,h.type,h.amount,h.date,h.by]));
+    const csv = rows.map(r=>r.join(',')).join('\n');
+    const blob = new Blob([csv], {type:'text/csv'});
+    const a = document.createElement('a');
+    a.href = URL.createObjectURL(blob);
+    a.download = `${acc}_history.csv`;
+    a.click();
+  });
 });
 
+// Agent Panel
 $('#btnEnter').addEventListener('click', ()=>{
   if($('#secCode').value.trim() === CONFIG.SECURITY_CODE){
     $('#gate').classList.add('hide');
@@ -322,17 +312,11 @@ $('#btnSubmit').addEventListener('click', async ()=>{
   const by = $('#aBy').value.trim() || 'Agent';
   if(!acc || !amt){ alert('Account Number और Amount भरें'); return; }
 
-  let saved = false;
   const res = await gsAppend(acc, type, amt, by);
-  if(res?.status==='ok'){ saved = true; }
-
-  if(!saved){
-    const history = localLoad(acc);
-    history.push({date: nowIST(), type, amount: amt, by});
-    localSave(acc, history);
-    alert('Network error. Saved locally only.');
-  } else {
+  if(res?.status==='success'){
     alert('Transaction saved online.');
+  } else {
+    alert('Network error. Transaction failed.');
   }
 
   await loadAgentHistory(acc);
@@ -342,6 +326,7 @@ $('#btnSubmit').addEventListener('click', async ()=>{
   $('#aAmount').value = '';
 });
 
+// Tabs
 $('#tabCustomer').addEventListener('click', ()=>{
   $('#tabCustomer').classList.add('active');
   $('#tabAgent').classList.remove('active');
@@ -356,5 +341,7 @@ $('#tabAgent').addEventListener('click', ()=>{
 });
 </script>
 
+
 </body>
 </html>
+
