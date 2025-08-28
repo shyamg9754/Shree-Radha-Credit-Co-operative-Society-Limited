@@ -65,8 +65,8 @@
 
   <div class="wrap">
     <div class="tabs">
-      <button id="tabCustomer" class="tab active">👤 Logig loan Account</button>
-      <button id="tabAgent" class="tab">?</button>
+      <button id="tabCustomer" class="tab active">👤 Loan Account</button>
+      <button id="tabAgent" class="tab">🧑‍💼 Agent Panel</button>
     </div>
 
     <!-- CUSTOMER PANEL -->
@@ -117,9 +117,9 @@
       </div>
     </section>
 
-    <!-- AGENT PANEL (LOCKED) -->
+    <!-- AGENT PANEL -->
     <section id="agentPanel" class="card hide">
-      <h2 style="margin:4px 0 14px">Shree Radha Credit Co-operative Society Limited,Gujri (Dhamnod)</h2>
+      <h2 style="margin:4px 0 14px">Agent Transactions</h2>
 
       <div id="gate" class="grid">
         <div class="col-3">
@@ -130,7 +130,6 @@
           <label>&nbsp;</label>
           <button id="btnEnter">Enter</button>
         </div>
-        <div class="col-6 note"></div>
       </div>
 
       <div id="agentForm" class="grid hide" style="margin-top:8px">
@@ -172,18 +171,17 @@
           </thead>
           <tbody></tbody>
         </table>
-        <div id="aNoData" class="muted">Powered by:Shree Radha Credit Co-operative Society Limited,Gujri (Dhamnod)</div>
+        <div id="aNoData" class="muted">No history found</div>
       </div>
     </section>
   </div>
 
- <script>
+<script>
 const CONFIG = {
-  SCRIPT_URL: "https://script.google.com/macros/s/AKfycbw6eskY5natsQFMXaBGOfvowU_WtiF9v4zCLnW-jdn63ueLhAnhQ614NcpouHaeRmXm/exec", // यहाँ अपना Apps Script WebApp URL डालें
+  SCRIPT_URL: "https://script.google.com/macros/s/AKfycbxVyR1aanjwG-n55x0-s6GTZ-znWJXMJfNs9b4BN9HS_fxQ7GCYr3_p2k0jZtcC2jYIsA/exec", // यहाँ अपना Apps Script WebApp URL डालें
   SECURITY_CODE: "R@dha9754",
   SHEET_TIMEZONE: "Asia/Kolkata"
 };
-
 
 const $ = sel => document.querySelector(sel);
 const fmt = n => (Number(n)||0).toLocaleString('en-IN', {maximumFractionDigits:2});
@@ -193,7 +191,6 @@ const nowIST = () => {
   return `${pad(d.getDate())}-${pad(d.getMonth()+1)}-${d.getFullYear()} ${pad(d.getHours())}:${pad(d.getMinutes())}:${pad(d.getSeconds())}`;
 };
 
-// Compute running balance
 function computeRunning(history){
   let bal = 0;
   return history.map(it => {
@@ -204,7 +201,6 @@ function computeRunning(history){
   });
 }
 
-// Render transaction table
 function renderTable(tbody, table, emptyDiv, history){
   tbody.innerHTML = '';
   if(!history || !history.length){
@@ -228,17 +224,14 @@ function renderTable(tbody, table, emptyDiv, history){
   return rows.at(-1)?.balance || 0;
 }
 
-// Local storage helpers
 function localKey(acc){ return `ledger_${acc}`; }
 function localLoad(acc){ try{ return JSON.parse(localStorage.getItem(localKey(acc))||'[]'); }catch(e){ return []; } }
 function localSave(acc, arr){ localStorage.setItem(localKey(acc), JSON.stringify(arr)); }
 
-// Fetch from Google Sheet
 async function gsFetchHistory(account){
-  if(!CONFIG.SCRIPT_URL) return null;
   try{
     const url = CONFIG.SCRIPT_URL + `?fn=getHistory&account=${encodeURIComponent(account)}`;
-    const res = await fetch(url);
+    const res = await fetch(url, { method:"GET", mode:"cors" });
     if(!res.ok) throw new Error('Fetch failed');
     return (await res.json())?.history || [];
   }catch(e){
@@ -247,13 +240,12 @@ async function gsFetchHistory(account){
   }
 }
 
-// Append transaction to Google Sheet
 async function gsAppend(account, type, amount, by){
-  if(!CONFIG.SCRIPT_URL) return null;
   try{
     const payload = {fn:'addTransaction', account, type, amount: Number(amount), by, date: nowIST()};
     const res = await fetch(CONFIG.SCRIPT_URL, {
       method:'POST',
+      mode:"cors",
       headers:{'Content-Type':'application/json'},
       body: JSON.stringify(payload)
     });
@@ -265,31 +257,28 @@ async function gsAppend(account, type, amount, by){
   }
 }
 
-// Load customer panel history
 async function loadCustomerHistory(acc){
   let history = await gsFetchHistory(acc);
   if(!history || !history.length){
     history = localLoad(acc);
   } else {
-    localSave(acc, history); // sync to localStorage
+    localSave(acc, history);
   }
   const bal = renderTable($('#historyTable tbody'), $('#historyTable'), $('#noData'), history);
   $('#cBalance').value = fmt(bal);
 }
 
-// Load agent panel history
 async function loadAgentHistory(acc){
   let history = await gsFetchHistory(acc);
   if(!history || !history.length){
     history = localLoad(acc);
   } else {
-    localSave(acc, history); // sync to localStorage
+    localSave(acc, history);
   }
   const bal = renderTable($('#aHistoryTable tbody'), $('#aHistoryTable'), $('#aNoData'), history);
   return bal;
 }
 
-// CUSTOMER PANEL EVENTS
 $('#btnCheck').addEventListener('click', async ()=>{
   const acc = $('#cAccount').value.trim();
   const code = $('#cCode').value.trim();
@@ -313,7 +302,6 @@ $('#btnExport').addEventListener('click', ()=>{
   a.click();
 });
 
-// AGENT PANEL EVENTS
 $('#btnEnter').addEventListener('click', ()=>{
   if($('#secCode').value.trim() === CONFIG.SECURITY_CODE){
     $('#gate').classList.add('hide');
@@ -354,7 +342,6 @@ $('#btnSubmit').addEventListener('click', async ()=>{
   $('#aAmount').value = '';
 });
 
-// TAB SWITCHING
 $('#tabCustomer').addEventListener('click', ()=>{
   $('#tabCustomer').classList.add('active');
   $('#tabAgent').classList.remove('active');
@@ -371,6 +358,3 @@ $('#tabAgent').addEventListener('click', ()=>{
 
 </body>
 </html>
-
-
-
