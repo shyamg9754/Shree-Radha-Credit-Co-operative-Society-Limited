@@ -34,73 +34,84 @@
   </style>
 </head>
 <body>
-  <div class="box" id="loginBox">
-    <h2>🔑 Agent Login</h2>
-    <input type="password" id="agentPass" placeholder="Enter Password">
-    <button onclick="checkLogin()">Login</button>
-  </div>
 
-  <div class="box" id="formBox" style="display:none;">
-    <h2>💰 Transaction Entry</h2>
-    <input type="text" id="account" placeholder="Account Number" required>
-    
-    <!-- Deposit / Withdraw Option -->
-    <select id="type" required>
-      <option value="">-- Select Transaction Type --</option>
-      <option value="Deposit">Deposit</option>
-      <option value="Withdraw">Withdraw</option>
-    </select>
-    
-    <input type="number" id="amount" placeholder="Amount" required>
-    <input type="text" id="agent" placeholder="Agent Name" required>
-    <button onclick="saveData()">Save Transaction</button>
-  </div>
+<div class="box" id="loginBox">
+  <h2>🔑 Agent Login</h2>
+  <input type="password" id="agentPass" placeholder="Enter Password">
+  <button onclick="checkLogin()">Login</button>
+</div>
 
-  <script>
-    const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbwN52MffMys5eMuH2dJmeyyZnETCLOHG8DCbwnqzw8Zx35l2p6oUEiCyw3G1KS9yPAG/exec"; // 👉 यहाँ Apps Script Deploy URL डालना
+<div class="box" id="formBox" style="display:none;">
+  <h2>💰 Transaction Entry</h2>
+  <input type="text" id="account" placeholder="Account Number" required>
+  
+  <!-- Deposit / Withdraw -->
+  <select id="type" required>
+    <option value="">-- Select Transaction Type --</option>
+    <option value="Deposit">Deposit</option>
+    <option value="Withdraw">Withdraw</option>
+  </select>
+  
+  <input type="number" id="amount" placeholder="Amount" required>
+  <input type="text" id="agent" placeholder="Agent Name" required>
+  <button onclick="saveData()">Save Transaction</button>
+</div>
 
-    function checkLogin(){
-      const pass = document.getElementById("agentPass").value;
-      if(pass === "1234"){   // 👉 यहाँ अपनी Agent Password सेट करो
-        document.getElementById("loginBox").style.display="none";
-        document.getElementById("formBox").style.display="block";
-      } else {
-        alert("❌ Wrong Password");
-      }
+<script>
+const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbx9taq5iFJDKnuF6Jlgw8AsiAbI3Jh_zX9KVBJ5UmGA8PFT0YDlWA4fDT8LWFqc-kH7/exec";  // 👈 Apps Script Web App URL डालें
+const AGENT_PASSWORD = "1234";          // 👈 अपना Agent Password
+
+function checkLogin(){
+  const pass = document.getElementById("agentPass").value;
+  if(pass === AGENT_PASSWORD){
+    document.getElementById("loginBox").style.display="none";
+    document.getElementById("formBox").style.display="block";
+  } else {
+    alert("❌ Wrong Password");
+  }
+}
+
+function saveData(){
+  const data = {
+    account: document.getElementById("account").value,
+    type: document.getElementById("type").value,
+    amount: document.getElementById("amount").value,
+    agent: document.getElementById("agent").value
+  };
+
+  if(!data.account || !data.type || !data.amount || !data.agent){
+    alert("⚠ Please fill all fields");
+    return;
+  }
+
+  fetch(SCRIPT_URL, {
+    method:"POST",
+    headers: {"Content-Type":"application/json"},
+    body: JSON.stringify(data)
+  })
+  .then(async res => {
+    if(res.ok) return res.json();
+    // अगर server response 200 नहीं है तो error throw करें
+    const txt = await res.text();
+    throw new Error(txt || "Server Error");
+  })
+  .then(d => {
+    if(d.status==="success"){
+      alert("✅ Transaction Saved");
+      document.getElementById("account").value="";
+      document.getElementById("type").value="";
+      document.getElementById("amount").value="";
+      document.getElementById("agent").value="";
+    } else {
+      alert("❌ Error: "+d.message);
     }
+  })
+  .catch(err=>{
+    console.error(err);
+    alert("⚠ Network / CORS Error: "+err.message);
+  });
+}
+</script>
 
-    function saveData(){
-      const data = {
-        account: document.getElementById("account").value,
-        type: document.getElementById("type").value,
-        amount: document.getElementById("amount").value,
-        agent: document.getElementById("agent").value
-      };
-
-      if(!data.account || !data.type || !data.amount || !data.agent){
-        alert("⚠ Please fill all fields");
-        return;
-      }
-
-      fetch(SCRIPT_URL, {
-        method:"POST",
-        headers:{"Content-Type":"application/json"},
-        body: JSON.stringify(data)
-      })
-      .then(res => res.json())
-      .then(d => {
-        if(d.status==="success"){
-          alert("✅ Transaction Saved");
-          document.getElementById("account").value="";
-          document.getElementById("type").value="";
-          document.getElementById("amount").value="";
-          document.getElementById("agent").value="";
-        } else {
-          alert("❌ Error: "+d.message);
-        }
-      })
-      .catch(err => alert("⚠ Network Error: "+err));
-    }
-  </script>
 </body>
 </html>
