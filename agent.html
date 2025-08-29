@@ -5,31 +5,31 @@
   <title>Agent Panel — Shree Radha Credit Co-operative Society</title>
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <style>
-    body{
+    body {
       font-family: Arial, sans-serif;
-      background:#f5f5f5;
-      padding:20px;
+      background: #f5f5f5;
+      padding: 20px;
     }
-    .box{
-      background:white;
-      max-width:420px;
-      margin:50px auto;
-      padding:20px;
-      border-radius:12px;
-      box-shadow:0 2px 8px rgba(0,0,0,0.2);
+    .box {
+      background: white;
+      max-width: 420px;
+      margin: 50px auto;
+      padding: 20px;
+      border-radius: 12px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.2);
     }
-    input,select,button{
-      width:100%;
-      padding:10px;
-      margin:10px 0;
-      border-radius:8px;
-      border:1px solid #ccc;
-      font-size:16px;
+    input, select, button {
+      width: 100%;
+      padding: 10px;
+      margin: 10px 0;
+      border-radius: 8px;
+      border: 1px solid #ccc;
+      font-size: 16px;
     }
-    button{
-      background:#800000;
-      color:white;
-      cursor:pointer;
+    button {
+      background: #800000;
+      color: white;
+      cursor: pointer;
     }
   </style>
 </head>
@@ -38,78 +38,39 @@
 <div class="box" id="loginBox">
   <h2>🔑 Agent Login</h2>
   <input type="password" id="agentPass" placeholder="Enter Password">
-  <button onclick="checkLogin()">Login</button>
+  <button type="button" onclick="checkLogin()">Login</button>
 </div>
 
 <div class="box" id="formBox" style="display:none;">
   <h2>💰 Transaction Entry</h2>
-  <input type="text" id="account" placeholder="Account Number" required>
-  
-  <!-- Deposit / Withdraw -->
-  <select id="type" required>
-    <option value="">-- Select Transaction Type --</option>
-    <option value="Deposit">Deposit</option>
-    <option value="Withdraw">Withdraw</option>
-  </select>
-  
-  <input type="number" id="amount" placeholder="Amount" required>
-  <input type="text" id="agent" placeholder="Agent Name" required>
-  <button onclick="saveData()">Save Transaction</button>
+
+  <!-- Form Submission to Google Apps Script -->
+  <form id="agentForm" action="https://script.google.com/macros/s/AKfycbx9taq5iFJDKnuF6Jlgw8AsiAbI3Jh_zX9KVBJ5UmGA8PFT0YDlWA4fDT8LWFqc-kH7/exec" method="post" target="_blank">
+    <input type="text" name="account" placeholder="Account Number" required>
+    
+    <select name="type" required>
+      <option value="">-- Select Transaction Type --</option>
+      <option value="Deposit">Deposit</option>
+      <option value="Withdraw">Withdraw</option>
+    </select>
+
+    <input type="number" name="amount" placeholder="Amount" required>
+    <input type="text" name="agent" placeholder="Agent Name" required>
+    <button type="submit">Save Transaction</button>
+  </form>
 </div>
 
 <script>
-const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbx9taq5iFJDKnuF6Jlgw8AsiAbI3Jh_zX9KVBJ5UmGA8PFT0YDlWA4fDT8LWFqc-kH7/exec";  // 👈 Apps Script Web App URL डालें
-const AGENT_PASSWORD = "1234";          // 👈 अपना Agent Password
+const AGENT_PASSWORD = "1234";  // अपना Agent password
 
 function checkLogin(){
   const pass = document.getElementById("agentPass").value;
   if(pass === AGENT_PASSWORD){
-    document.getElementById("loginBox").style.display="none";
-    document.getElementById("formBox").style.display="block";
+    document.getElementById("loginBox").style.display = "none";
+    document.getElementById("formBox").style.display = "block";
   } else {
     alert("❌ Wrong Password");
   }
-}
-
-function saveData(){
-  const data = {
-    account: document.getElementById("account").value,
-    type: document.getElementById("type").value,
-    amount: document.getElementById("amount").value,
-    agent: document.getElementById("agent").value
-  };
-
-  if(!data.account || !data.type || !data.amount || !data.agent){
-    alert("⚠ Please fill all fields");
-    return;
-  }
-
-  fetch(SCRIPT_URL, {
-    method:"POST",
-    headers: {"Content-Type":"application/json"},
-    body: JSON.stringify(data)
-  })
-  .then(async res => {
-    if(res.ok) return res.json();
-    // अगर server response 200 नहीं है तो error throw करें
-    const txt = await res.text();
-    throw new Error(txt || "Server Error");
-  })
-  .then(d => {
-    if(d.status==="success"){
-      alert("✅ Transaction Saved");
-      document.getElementById("account").value="";
-      document.getElementById("type").value="";
-      document.getElementById("amount").value="";
-      document.getElementById("agent").value="";
-    } else {
-      alert("❌ Error: "+d.message);
-    }
-  })
-  .catch(err=>{
-    console.error(err);
-    alert("⚠ Network / CORS Error: "+err.message);
-  });
 }
 </script>
 
