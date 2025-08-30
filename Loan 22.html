@@ -3,13 +3,13 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Customer + Agent Ledger — Shree Radha Credit Co-operative Society</title>
+  <title>Shree Radha Credit Co-operative Society — Account Panel</title>
   <style>
     :root{
       --maroon:#800000;--light:#f7f2f2;--paper:#fff;--ink:#222;--ok:#0a7c2f;--warn:#b45309;--bad:#a60000;
     }
     *{box-sizing:border-box}
-    body{margin:0;background:var(--light);color:var(--ink);font-family:system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif}
+    body{margin:0;background:var(--light);color:var(--ink);font-family:system-ui,Segoe UI,Roboto,Arial}
     header{background:var(--maroon);color:#fff;padding:16px 20px;display:flex;align-items:center;gap:12px;justify-content:space-between}
     header h1{font-size:20px;margin:0;font-weight:700}
     header small{opacity:.9}
@@ -29,7 +29,6 @@
     button{padding:12px 16px;border:none;border-radius:12px;background:var(--maroon);color:#fff;font-weight:700;cursor:pointer}
     button.ghost{background:#efefef;color:#222}
     button.ok{background:var(--ok)}
-    button.warn{background:var(--warn)}
     .row{display:flex;gap:10px;flex-wrap:wrap}
     .pill{display:inline-flex;align-items:center;gap:8px;padding:8px 10px;border-radius:999px;background:#f1f1f1;border:1px solid #e5e5e5;font-size:12px}
     .note{font-size:12px;color:#555}
@@ -39,8 +38,6 @@
     .right{text-align:right}
     .muted{color:#666}
     .status-dot{width:8px;height:8px;border-radius:50%;display:inline-block;margin-right:6px}
-    .dep{color:var(--ok)}
-    .wit{color:var(--bad)}
     .hide{display:none}
     .footer{margin-top:16px;display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap}
     .brand{display:flex;align-items:center;gap:8px}
@@ -53,43 +50,43 @@
     <div class="brand">
       <div class="logo"></div>
       <div>
-        <h1>Shree Radha Credit Co-operative Society Limited,Gujri (Dhamnod)<br>Check Loan Details</h1>
+        <h1>Shree Radha Credit Co-operative Society Limited, Gujri (Dhamnod)</h1>
         <small>Reg. No: DR/DHR/151716</small>
       </div>
     </div>
     <div class="row">
       <span class="pill"><strong>System:</strong> Web Page</span>
-      <span class="pill"><strong>Mode:</strong> Online </span>
+      <span class="pill"><strong>Mode:</strong> Online</span>
     </div>
   </header>
 
   <div class="wrap">
     <div class="tabs">
-      <button id="tabCustomer" class="tab active">👤 Loan Account</button>
-      <button id="tabAgent" class="tab">🧑‍💼 Agent Panel</button>
+      <button id="tabCustomer" class="tab active">👤 Customer Login </button>
+      <button id="tabAgent" class="tab">🛠 Agent Panel</button>
     </div>
 
     <!-- CUSTOMER PANEL -->
     <section id="customerPanel" class="card">
-      <h2 style="margin:4px 0 14px">Loan Balance & History</h2>
+      <h2>Balance & History</h2>
       <div class="grid">
         <div class="col-4">
           <label>Account Number</label>
           <input id="cAccount" placeholder="Enter Account Number" />
         </div>
         <div class="col-4">
-          <label>Enter Password</label>
+          <label>Password</label>
           <input id="cCode" placeholder="Enter Password" />
         </div>
         <div class="col-4">
           <label>&nbsp;</label>
-          <button id="btnCheck"> Loan Balance / History देखें</button>
+          <button id="btnCheck">Balance / History देखें</button>
         </div>
         <div class="col-12">
           <label>Current Balance (₹)</label>
           <input id="cBalance" readonly />
         </div>
-        <div class="col-12 note">Note: </div>
+        <div class="col-12 note">Note: यह पैनल केवल देखने के लिए है। </div>
       </div>
 
       <div id="historyWrap" class="col-12" style="margin-top:14px">
@@ -109,7 +106,7 @@
       </div>
 
       <div class="footer">
-        <div class="note">Powered by: Shree Radha Credit Co-operative Society Limited,Gujri (Dhamnod)</div>
+        <div class="note">Powered by: Shree Radha Credit Co-operative Society</div>
         <div class="row">
           <button class="ghost" id="btnPrint">🖨️ Print</button>
           <button class="ghost" id="btnExport">⬇️ Export CSV</button>
@@ -119,12 +116,11 @@
 
     <!-- AGENT PANEL -->
     <section id="agentPanel" class="card hide">
-      <h2 style="margin:4px 0 14px">Agent Transactions</h2>
-
+      <h2>Agent Panel</h2>
       <div id="gate" class="grid">
         <div class="col-3">
           <label>Password</label>
-          <input id="secCode" placeholder="" />
+          <input id="secCode" type="password" />
         </div>
         <div class="col-3">
           <label>&nbsp;</label>
@@ -135,13 +131,13 @@
       <div id="agentForm" class="grid hide" style="margin-top:8px">
         <div class="col-3">
           <label>Account Number</label>
-          <input id="aAccount" placeholder=" Enter Account Number" />
+          <input id="aAccount" placeholder="Enter Account Number" />
         </div>
         <div class="col-3">
           <label>Type</label>
           <select id="aType">
-            <option value="Loan Amount">Loan Amount</option>
-            <option value="EMI Amount">EMI Amount</option>
+            <option value="Deposit">Deposit</option>
+            <option value="Withdraw">Withdraw</option>
           </select>
         </div>
         <div class="col-3">
@@ -171,178 +167,159 @@
           </thead>
           <tbody></tbody>
         </table>
-        <div id="aNoData" class="muted">No history found</div>
+        <div id="aNoData" class="muted">No data available…</div>
       </div>
     </section>
   </div>
 
 <script>
 const CONFIG = {
-  SCRIPT_URL: "https://script.google.com/macros/s/AKfycbzWAYUwXXeaeDJJUb97qsjwCvGKtl019d9KgcStY_g-FYQ6-N7IJ6WO8QQ0vz3zsZ5d6g/exec",
-  SECURITY_CODE: "R@dha9754",
-  SHEET_TIMEZONE: "Asia/Kolkata"
+  SCRIPT_URL: "https://script.google.com/macros/s/AKfycbw4ndXA5mEkHlkDxFA7etPy8Y3kcqi9ezeG1xIeYPIygE6V4gYHgGY1T3Y_X9kDMdxd/exec",
+  SECURITY_CODE: "R@dha9754"
 };
 
 const $ = sel => document.querySelector(sel);
-const fmt = n => (Number(n)||0).toLocaleString('en-IN', {maximumFractionDigits:2});
-const nowIST = () => {
-  const d = new Date();
-  const pad = x => String(x).padStart(2,'0');
-  return `${pad(d.getDate())}-${pad(d.getMonth()+1)}-${d.getFullYear()} ${pad(d.getHours())}:${pad(d.getMinutes())}:${pad(d.getSeconds())}`;
-};
+const fmt = n => (Number(n)||0).toLocaleString('en-IN',{maximumFractionDigits:2});
+const nowIST = ()=> new Date().toLocaleString("en-IN");
+
+// Local backup
+function localKey(acc){ return `ledger_${acc}`; }
+function localLoad(acc){ try{ return JSON.parse(localStorage.getItem(localKey(acc))||'[]'); }catch(e){ return []; } }
+function localSave(acc,arr){ localStorage.setItem(localKey(acc),JSON.stringify(arr)); }
 
 function computeRunning(history){
-  let bal = 0;
-  return history.map(it => {
-    const amt = Number(it.amount)||0;
-    if(it.type==='Deposit' || it.type==='Loan Amount') bal += amt;
-    else bal -= amt;
-    return {...it, balance: bal};
+  let bal=0;
+  return history.map(it=>{
+    const amt=Number(it.amount)||0;
+    if(it.type==="Deposit") bal+=amt; else bal-=amt;
+    return {...it,balance:bal};
   });
 }
 
-function renderTable(tbody, table, emptyDiv, history){
-  tbody.innerHTML = '';
-  if(!history || !history.length){
-    table.classList.add('hide');
-    emptyDiv.classList.remove('hide');
-    return;
-  }
-  emptyDiv.classList.add('hide');
-  table.classList.remove('hide');
-  const rows = computeRunning(history);
+function renderTable(tbody,table,emptyDiv,history){
+  tbody.innerHTML="";
+  if(!history.length){ table.classList.add("hide"); emptyDiv.classList.remove("hide"); return 0; }
+  emptyDiv.classList.add("hide"); table.classList.remove("hide");
+  const rows=computeRunning(history);
   for(const it of rows){
-    const tr = document.createElement('tr');
-    tr.innerHTML = `
-      <td>${it.date||''}</td>
-      <td><span class="status-dot" style="background:${it.type==='Deposit'||it.type==='Loan Amount'?'#0a7c2f':'#a60000'}"></span>${it.type}</td>
+    const tr=document.createElement("tr");
+    tr.innerHTML=`
+      <td>${it.date||""}</td>
+      <td><span class="status-dot" style="background:${it.type==="Deposit"?"#0a7c2f":"#a60000"}"></span>${it.type}</td>
       <td class="right">${fmt(it.amount)}</td>
       <td class="right">${fmt(it.balance)}</td>
-      <td>${it.by||''}</td>`;
+      <td>${it.by||""}</td>`;
     tbody.appendChild(tr);
   }
-  return rows.at(-1)?.balance || 0;
+  return rows.at(-1)?.balance||0;
 }
 
+// Google Sheet fetch
 async function gsFetchHistory(account){
   try{
-    const url = CONFIG.SCRIPT_URL + `?fn=getHistory&account=${encodeURIComponent(account)}`;
-    const res = await fetch(url, { method:"GET", mode:"cors" });
-    if(!res.ok) throw new Error('Fetch failed');
-    const data = await res.json();
-    return data.history?.map(r=>({account:r[0], type:r[1], amount:r[2], date:r[3], by:r[4]})) || [];
-  }catch(e){
-    console.error("Fetch error:", e);
-    return [];
+    const res=await fetch(CONFIG.SCRIPT_URL+`?account=${encodeURIComponent(account)}`);
+    if(!res.ok) throw new Error("Bad response");
+    const data=await res.json();
+    return data;
+  }catch(err){ 
+    console.error("Fetch error",err);
+    return null; 
   }
 }
 
-async function gsAppend(account, type, amount, by){
+async function gsAppend(account,type,amount,by){
+  const payload={account,type,amount:Number(amount),by,date:nowIST()};
   try{
-    const payload = {fn:'addTransaction', account, type, amount:Number(amount), by, date: nowIST()};
-    const res = await fetch(CONFIG.SCRIPT_URL, {
-      method:'POST',
-      mode:"cors",
-      headers:{'Content-Type':'application/json'},
-      body: JSON.stringify(payload)
+    const res=await fetch(CONFIG.SCRIPT_URL,{
+      method:"POST",
+      body:JSON.stringify(payload),
+      headers:{"Content-Type":"application/json"}
     });
-    if(!res.ok) throw new Error('Save failed');
+    if(!res.ok) throw new Error("Bad response");
     return await res.json();
-  }catch(e){
-    console.error("Append error:", e);
-    return null;
+  }catch(err){ 
+    console.error("Append error",err);
+    return {status:"local"}; 
   }
 }
 
-async function loadCustomerHistory(acc){
-  const history = await gsFetchHistory(acc);
-  const bal = renderTable($('#historyTable tbody'), $('#historyTable'), $('#noData'), history);
-  $('#cBalance').value = fmt(bal);
-}
+// Customer check
+$('#btnCheck').addEventListener('click',async ()=>{
+  const acc=$('#cAccount').value.trim();
+  const code=$('#cCode').value.trim();
+  if(!acc||!code){alert("Account Number और Password डालें");return;}
+  if(code!==acc.slice(-4)){alert("गलत Password (last 4 digits डालें)");return;}
+
+  let history=[];
+  try{ const data=await gsFetchHistory(acc); if(data&&Array.isArray(data.history)) history=data.history; }catch{}
+  if(!history.length) history=localLoad(acc);
+
+  const bal=renderTable($('#historyTable tbody'),$('#historyTable'),$('#noData'),history);
+  $('#cBalance').value=fmt(bal);
+});
+
+// Print + Export
+$('#btnPrint').addEventListener('click',()=>window.print());
+$('#btnExport').addEventListener('click',()=>{
+  const acc=$('#cAccount').value.trim(); if(!acc){alert("पहले Account Number डालें");return;}
+  const hist=localLoad(acc);
+  const rows=[["Account","DateTime","Type","Amount","By"]].concat(hist.map(h=>[acc,h.date,h.type,h.amount,h.by]));
+  const csv=rows.map(r=>r.join(",")).join("\n");
+  const blob=new Blob([csv],{type:"text/csv"});
+  const a=document.createElement("a"); a.href=URL.createObjectURL(blob); a.download=`${acc}_history.csv`; a.click();
+});
+
+// Agent login
+$('#btnEnter').addEventListener('click',()=>{
+  if($('#secCode').value.trim()===CONFIG.SECURITY_CODE){
+    $('#gate').classList.add('hide'); $('#agentForm').classList.remove('hide');
+  }else alert("गलत Security Code");
+});
+
+$('#btnLoadAcc').addEventListener('click',async ()=>{
+  const acc=$('#aAccount').value.trim(); if(!acc){alert("Account Number डालें");return;}
+  await loadAgentHistory(acc);
+});
 
 async function loadAgentHistory(acc){
-  const history = await gsFetchHistory(acc);
-  const bal = renderTable($('#aHistoryTable tbody'), $('#aHistoryTable'), $('#aNoData'), history);
-  return bal;
+  let history=[];
+  try{ const data=await gsFetchHistory(acc); if(data&&Array.isArray(data.history)) history=data.history; }catch{}
+  if(!history.length) history=localLoad(acc);
+  return renderTable($('#aHistoryTable tbody'),$('#aHistoryTable'),$('#aNoData'),history);
 }
 
-// Customer Panel
-$('#btnCheck').addEventListener('click', async ()=>{
-  const acc = $('#cAccount').value.trim();
-  const code = $('#cCode').value.trim();
-  if(!acc){ alert('Account Number डालें'); return; }
-  if(!code){ alert('Security Code डालें'); return; }
-  if(code !== acc.slice(-4)){ alert('गलत Security Code'); return; }
-  await loadCustomerHistory(acc);
-});
+$('#btnSubmit').addEventListener('click',async ()=>{
+  const acc=$('#aAccount').value.trim();
+  const type=$('#aType').value;
+  const amt=Number($('#aAmount').value);
+  const by=$('#aBy').value.trim()||"Agent";
+  if(!acc||!amt){alert("Account Number और Amount भरें");return;}
 
-$('#btnPrint').addEventListener('click', ()=>window.print());
-$('#btnExport').addEventListener('click', ()=>{
-  const acc = $('#cAccount').value.trim();
-  if(!acc){ alert('पहले Account Number डालें'); return; }
-  gsFetchHistory(acc).then(hist=>{
-    const rows = [['Account','Type','Amount','Date','By']].concat(hist.map(h=>[acc,h.type,h.amount,h.date,h.by]));
-    const csv = rows.map(r=>r.join(',')).join('\n');
-    const blob = new Blob([csv], {type:'text/csv'});
-    const a = document.createElement('a');
-    a.href = URL.createObjectURL(blob);
-    a.download = `${acc}_history.csv`;
-    a.click();
-  });
-});
-
-// Agent Panel
-$('#btnEnter').addEventListener('click', ()=>{
-  if($('#secCode').value.trim() === CONFIG.SECURITY_CODE){
-    $('#gate').classList.add('hide');
-    $('#agentForm').classList.remove('hide');
-  } else alert('गलत Security Code');
-});
-
-$('#btnLoadAcc').addEventListener('click', async ()=>{
-  const acc = $('#aAccount').value.trim();
-  if(!acc){ alert('Account Number डालें'); return; }
-  await loadAgentHistory(acc);
-});
-
-$('#btnSubmit').addEventListener('click', async ()=>{
-  const acc = $('#aAccount').value.trim();
-  const type = $('#aType').value;
-  const amt = Number($('#aAmount').value);
-  const by = $('#aBy').value.trim() || 'Agent';
-  if(!acc || !amt){ alert('Account Number और Amount भरें'); return; }
-
-  const res = await gsAppend(acc, type, amt, by);
-  if(res?.status==='success'){
-    alert('Transaction saved online.');
-  } else {
-    alert('Network error. Transaction failed.');
+  const result=await gsAppend(acc,type,amt,by);
+  if(result.status!=="ok"){ // fallback to local
+    const history=localLoad(acc);
+    history.push({date:nowIST(),type,amount:amt,by});
+    localSave(acc,history);
   }
-
   await loadAgentHistory(acc);
   if($('#cAccount').value.trim()===acc){
-    await loadCustomerHistory(acc);
+    const custHistory=localLoad(acc);
+    const bal=renderTable($('#historyTable tbody'),$('#historyTable'),$('#noData'),custHistory);
+    $('#cBalance').value=fmt(bal);
   }
-  $('#aAmount').value = '';
+  $('#aAmount').value=""; alert("Transaction saved");
 });
 
-// Tabs
-$('#tabCustomer').addEventListener('click', ()=>{
-  $('#tabCustomer').classList.add('active');
-  $('#tabAgent').classList.remove('active');
-  $('#customerPanel').classList.remove('hide');
-  $('#agentPanel').classList.add('hide');
+// Tab switch
+$('#tabCustomer').addEventListener('click',()=>{
+  $('#tabCustomer').classList.add('active'); $('#tabAgent').classList.remove('active');
+  $('#customerPanel').classList.remove('hide'); $('#agentPanel').classList.add('hide');
 });
-$('#tabAgent').addEventListener('click', ()=>{
-  $('#tabAgent').classList.add('active');
-  $('#tabCustomer').classList.remove('active');
-  $('#agentPanel').classList.remove('hide');
-  $('#customerPanel').classList.add('hide');
+$('#tabAgent').addEventListener('click',()=>{
+  $('#tabAgent').classList.add('active'); $('#tabCustomer').classList.remove('active');
+  $('#agentPanel').classList.remove('hide'); $('#customerPanel').classList.add('hide');
 });
 </script>
 
-
 </body>
 </html>
-
-
