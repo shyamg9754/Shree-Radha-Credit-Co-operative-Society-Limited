@@ -1,0 +1,234 @@
+<!doctype html>
+<html lang="hi">
+<head>
+  <meta charset="utf-8">
+  <title>Shree Radha Credit Co-operative Society</title>
+  <!-- Google Fonts -->
+  <link href="https://fonts.googleapis.com/css2?family=Merriweather:wght@700&family=Poppins:wght@400;600&display=swap" rel="stylesheet">
+   <style>
+    body { 
+      font-family: 'Poppins', sans-serif; 
+      background:#f4f4f4; 
+      margin:0; 
+      padding:0; 
+      text-align:center; 
+    }
+    .panel { 
+      display:none; 
+      padding:25px; 
+      background:#fff; 
+      max-width:500px; 
+      margin:40px auto; 
+      border-radius:12px; 
+      box-shadow:0 4px 15px rgba(0,0,0,0.2);
+    }
+    input, select, button { 
+      width:90%; padding:12px; margin:10px 0; 
+      border:1px solid #ccc; border-radius:6px; font-size:16px; 
+    }
+    button { 
+      background:#800000; color:#fff; cursor:pointer; 
+      font-weight:bold; transition:0.3s; border:none; border-radius:6px;
+    }
+    button:hover { background:#a00000; }
+    
+    /* Main Top Heading */
+    h { 
+      font-family: 'Merriweather', serif; 
+      font-size: 30px; 
+      font-weight: 700; 
+      background:#800000; 
+      color:#fff; 
+      padding:8px 10px; 
+      margin:0; 
+      display:flex; 
+      justify-content:space-between; 
+      align-items:center; 
+      letter-spacing:1.5px; 
+      text-shadow:1px 1px 3px rgba(0,0,0,0.3);
+      border-bottom:5px solid #a00000;
+    }
+    
+    .agent-panel { 
+      background:#fff; 
+      color:#800000; 
+      padding:10px 15px; 
+      border-radius:50%; 
+      font-weight:bold; 
+      cursor:pointer; 
+      border:2px solid #fff; 
+      font-size:20px;
+      box-shadow:0 2px 6px rgba(0,0,0,0.2);
+      transition:0.3s;
+    }
+    .agent-panel:hover { background:#f4f4f4; }
+
+    .action-buttons { margin:20px 0; }
+    .action-buttons button { 
+      width:60%; 
+      margin:5px; 
+      font-size:18px; 
+      border-radius:30px;
+      box-shadow:0 3px 8px rgba(0,0,0,0.2);
+    }
+
+    .heading { 
+      font-family: 'Merriweather', serif; 
+      font-weight:700; 
+      color:#222; 
+      font-size:24px; 
+      margin-bottom:15px; 
+      text-align:center; 
+      text-transform:uppercase; 
+      border-bottom:2px solid #800000; 
+      padding-bottom:8px;
+    }
+
+    #balance { 
+      font-weight:bold; 
+      color:#111; 
+      font-size:20px; 
+      margin:15px 0;
+    }
+  </style>
+</head>
+<body>
+
+<h>Shree Radha Credit Co-operative Society, Gujri (Dhamnoad)
+  <div class="agent-panel" onclick="showPanel('agentLogin')">📜</div>
+</h>
+
+<div class="action-buttons">
+  <button onclick="showPanel('customerLogin')">“स्वागत है 🙏, डिजिटल सेवा में 💻✨।”</button>
+</div>
+
+<!-- Customer Login -->
+<div id="customerLogin" class="panel" style="display:block;">
+  <div class="heading">Customer Login</div>
+  <input id="cAccount" placeholder="Account Number" required>
+  <input id="cPass" placeholder="Password (Last 4 digits)" required>
+  <button onclick="customerLogin()">Check Account Balance</button>
+</div>
+
+<!-- Customer Panel -->
+<div id="customerPanel" class="panel">
+  <div class="heading">Welcome Customer</div>
+  <p id="balance">Balance: ₹0</p>
+  <p><b>Provided by: Shree Radha Credit Co-operative Society Limited, Gujri (Dhamnod)</b></p>
+  <button onclick="downloadStatement()">Download Statement (PDF)</button>
+</div>
+
+<!-- Agent Login -->
+<div id="agentLogin" class="panel">
+  <div class="heading">Agent Security</div>
+  <input id="aCode" placeholder="Enter Security Code">
+  <button onclick="agentAuth()">Continue</button>
+</div>
+
+<!-- Agent Panel -->
+<div id="agentPanel" class="panel">
+  <div class="heading">Agent Transaction</div>
+  <input id="aAccount" placeholder="Account Number">
+  <input id="aAmount" type="number" placeholder="Amount">
+  <select id="aType">
+    <option value="credit">Credit</option>
+    <option value="debit">Debit</option>
+  </select>
+  <input id="aID" placeholder="Agent ID">
+  <button onclick="saveTransaction()">Submit</button>
+  <p id="msg"></p>
+  <p><b>Provided by: Shree Radha Credit Co-operative Society Limited, Gujri (Dhamnod)</b></p>
+</div>
+
+<!-- jsPDF CDN -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.28/jspdf.plugin.autotable.min.js"></script>
+
+<script>
+const API_URL = "https://script.google.com/macros/s/AKfycbxzSO3znG47OIBOMzo7pkdwXo8Yt6IBfCuFbLIWoXCROsy7EUgOKrld5R9CVqzVbT2b/exec"; 
+const SECURITY_CODE = "1234";
+
+function showPanel(id){
+  document.querySelectorAll('.panel').forEach(p => p.style.display="none");
+  document.getElementById(id).style.display="block";
+}
+
+// ---- Customer Login ----
+function customerLogin(){
+  let acc = document.getElementById("cAccount").value;
+  let pass = document.getElementById("cPass").value;
+  fetch(`${API_URL}?fn=checkCustomer&account=${acc}&pass=${pass}`)
+    .then(res => res.json())
+    .then(data => {
+      if(data.success){
+        showPanel("customerPanel");
+        document.getElementById("balance").innerText = "Balance: ₹" + data.balance;
+      } else {
+        alert("Invalid Account/Password ❌");
+      }
+    })
+    .catch(err => alert("Error connecting to server!"));
+}
+
+// ---- Download PDF Statement ----
+async function downloadStatement(){
+  let acc = document.getElementById("cAccount").value;
+  let pass = document.getElementById("cPass").value;
+  try {
+    const res = await fetch(`${API_URL}?fn=getHistory&account=${acc}&pass=${pass}`);
+    const data = await res.json();
+    if(!data.success){ alert("Unable to fetch statement ❌"); return; }
+
+    const { jsPDF } = window.jspdf;
+    const doc = new jsPDF();
+    doc.setFontSize(18);
+    doc.text("Shree Radha Credit Co-operative Society Limited, Gujri (Dhamnod)", 14, 20);
+    doc.setFontSize(12);
+    doc.text(`Account: ${acc}`, 14, 28);
+    doc.text(`Balance: ₹${data.balance}`, 14, 36);
+    doc.text(`Date: ${new Date().toLocaleString()}`, 14, 44);
+
+    const tableColumn = ["Date & Time", "Amount", "Type", "Agent"];
+    const tableRows = [];
+
+    data.transactions.forEach(trx => {
+      tableRows.push([trx.date, `₹${trx.amount}`, trx.type, trx.agent || "-"]);
+    });
+
+    doc.autoTable({ startY: 50, head: [tableColumn], body: tableRows });
+    doc.save(`Statement_${acc}.pdf`);
+  } catch(err){
+    console.error(err);
+    alert("Error generating PDF ❌");
+  }
+}
+
+// ---- Agent Auth ----
+function agentAuth(){
+  let code = document.getElementById("aCode").value;
+  if(code === SECURITY_CODE){
+    showPanel("agentPanel");
+  } else { alert("Wrong Security Code ❌"); }
+}
+
+// ---- Agent Transaction ----
+function saveTransaction(){
+  let acc = document.getElementById("aAccount").value;
+  let amt = document.getElementById("aAmount").value;
+  let type = document.getElementById("aType").value;
+  let id = document.getElementById("aID").value;
+
+  fetch(API_URL, {
+    method: "POST",
+    body: JSON.stringify({fn:"transaction", account:acc, amount:amt, type:type, agent:id})
+  })
+  .then(res => res.json())
+  .then(data => {
+    document.getElementById("msg").innerText = data.message;
+    setTimeout(()=> document.getElementById("msg").innerText = "", 4000);
+  })
+  .catch(err => alert("Error connecting to server!"));
+}
+</script>
+</body>
+</html>
