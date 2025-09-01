@@ -18,7 +18,8 @@
       display:none; 
       padding:20px; 
       background:#fff; 
-      max-width:500px; 
+      max-width:600px; 
+      width:90%;             /* ✅ हर स्क्रीन में fit होगा */
       margin:20px auto; 
       border-radius:12px; 
       box-shadow:0 4px 15px rgba(0,0,0,0.2);
@@ -58,6 +59,7 @@
       letter-spacing:1px; 
       text-shadow:1px 1px 3px rgba(0,0,0,0.3);
       border-bottom:4px solid #a00000;
+      flex-wrap:wrap;     /* ✅ छोटे स्क्रीन पर wrap */
     }
     
     .agent-panel { 
@@ -105,12 +107,25 @@
 
     /* ✅ Mobile responsive */
     @media (max-width:600px){
-      h { font-size:18px; padding:6px; }
-      .panel { margin:10px; padding:15px; }
+      h { font-size:18px; padding:6px; flex-direction:column; text-align:center; }
+      .panel { margin:10px; padding:15px; width:95%; }
       input, select, button { font-size:14px; padding:10px; }
       .heading { font-size:18px; }
       #balance { font-size:16px; }
       .action-buttons button { width:95%; font-size:14px; }
+    }
+
+    /* ✅ Tablet responsive */
+    @media (min-width:601px) and (max-width:900px){
+      h { font-size:20px; padding:8px; }
+      .panel { width:85%; }
+      .action-buttons button { width:90%; }
+    }
+
+    /* ✅ Large screen optimization */
+    @media (min-width:901px){
+      .panel { width:70%; }
+      .action-buttons button { width:60%; }
     }
   </style>
 </head>
