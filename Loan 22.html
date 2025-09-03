@@ -144,11 +144,24 @@
       text-align: center;
     }
 
-    p {
-      font-size: 15px;
-      line-height: 1.5;
-      color: #330000;
+    /* ===== Extra Section ===== */
+    .beautiful-line {
+      font-style: italic;
+      color: #800000;
+      font-weight: 600;
+      margin-top: 10px;
       text-align: center;
+    }
+
+    .tips-box {
+      background: #f9f0f0;
+      color: #330000;
+      padding: 12px;
+      border-radius: 8px;
+      font-size: 14px;
+      line-height: 1.6;
+      margin-top: 15px;
+      text-align: left;
     }
 
     /* ===== Responsive ===== */
@@ -176,15 +189,15 @@
       .heading { font-size: 18px; }
       input, select { font-size: 14px; padding: 8px 10px; }
       #balance { font-size: 16px; }
-      p { font-size: 14px; }
+      .tips-box { font-size: 13px; }
     }
   </style>
 </head>
 <body>
 
 <header>
-  Shree Radha Credit Co-operative<br> Society, Gujri (Dhamnod)
-  <div class="agent-panel" onclick="showPanel('agentLogin')">.</div>
+  Shree Radha Credit Co-operative Society, Gujri (Dhamnod)
+  <div class="agent-panel" onclick="showPanel('agentLogin')">📜</div>
 </header>
 
 <div class="action-buttons">
@@ -197,6 +210,20 @@
   <input id="cAccount" placeholder="Account Number" required>
   <input id="cPass" placeholder="Password (Last 4 digits)" required>
   <button onclick="customerLogin()">Check Account Balance</button>
+
+  <!-- Beautiful line -->
+  <p class="beautiful-line">
+    “सही समय पर बचत और समझदारी से खर्च करना, आपकी वित्तीय सुरक्षा का रास्ता है।” 💡
+  </p>
+
+  <!-- Tips section -->
+  <div class="tips-box">
+    <b>💡 Tips:</b><br>
+    1️⃣ नियमित रूप से अपना balance check करें।<br>
+    2️⃣ हर transaction का record सुरक्षित रखें।<br>
+    3️⃣ Online banking का उपयोग केवल सुरक्षित device से करें।<br>
+    4️⃣ Aadhaar-linked account और strong password का प्रयोग करें।
+  </div>
 </div>
 
 <!-- Customer Panel -->
@@ -317,6 +344,3 @@ function saveTransaction(){
 </script>
 </body>
 </html>
-
-
-
