@@ -1,91 +1,124 @@
 <!doctype html>
-<html lang="hi">
+<html lang="en">
 <head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Contact — Call & WhatsApp</title>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Shree Radha Credit Co-operative Society — Contact</title>
   <style>
-    :root{
-      --bg:#ffffff; /* background white */
-      --card:#ffffff;
-      --text:#111111;
-      --muted:#444444;
-      --accent:#800000; /* maroon */
-      --accent2:#b03030;
-      --ring:#800000
-    }
+    :root{--maroon:#7a0b0b;--white:#ffffff;--muted:#666}
     *{box-sizing:border-box}
-    body{margin:0;font-family:system-ui,-apple-system,Segoe UI,Roboto,Ubuntu,Calibri,Helvetica,Arial,sans-serif;background:var(--bg);color:var(--text);display:grid;place-items:center;min-height:100dvh;padding:24px}
-    .card{width:100%;max-width:740px;background:var(--card);border:1px solid #ccc;border-radius:20px;box-shadow:0 10px 40px rgba(0,0,0,.2);overflow:hidden}
-    .head{padding:28px 24px 8px}
-    .title{font-weight:800;letter-spacing:.3px;font-size: clamp(22px,3.6vw,32px);color:var(--accent)}
-    .sub{color:var(--muted);margin-top:6px;font-size:clamp(13px,2.2vw,15px)}
-    .grid{display:grid;gap:14px;padding:20px;grid-template-columns:repeat( auto-fit, minmax(220px,1fr) )}
-    .btn{display:flex;align-items:center;gap:12px;justify-content:center;padding:16px 18px;border-radius:16px;text-decoration:none;color:white;outline:0;transition:.2s transform, .2s box-shadow}
-    .btn:hover{transform:translateY(-2px);box-shadow:0 8px 20px rgba(0,0,0,.25)}
-    .btn:active{transform:translateY(0)}
-    .call{background:var(--accent)}
-    .wa{background:green}
-    .sms{background:var(--accent2)}
-    .btn small{display:block;color:#f0f0f0;opacity:.9}
-    footer{padding:18px 22px;border-top:1px solid #ddd;color:var(--muted);font-size:12px;display:flex;justify-content:space-between;gap:10px;flex-wrap:wrap;background:#fafafa}
-    .copy{user-select:all}
-    .floating{position:fixed;right:18px;bottom:18px;display:flex;flex-direction:column;gap:12px;z-index:50}
-    .fab{width:56px;height:56px;border-radius:999px;display:grid;place-items:center;color:white;text-decoration:none;border:0}
-    .fab-wa{background:green}
-    .fab-call{background:var(--accent)}
-    .visually-hidden{position:absolute;inset:-1px;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0)}
-    .num{font-weight:700}
-    .icons svg{display:block}
+    body{font-family: Poppins, Arial, sans-serif; margin:0; background:var(--white); color:#222; -webkit-font-smoothing:antialiased}
+    .wrap{min-height:100vh; display:flex; align-items:center; justify-content:center; padding:32px}
+    .card{width:100%; max-width:900px; border-radius:12px; box-shadow:0 8px 30px rgba(0,0,0,0.08); overflow:hidden; display:grid; grid-template-columns: 1fr 380px}
+    .left{padding:34px 36px; background:linear-gradient(180deg,var(--white),#fffefc)}
+    .right{background:var(--maroon); color:var(--white); padding:28px 24px; display:flex; flex-direction:column; justify-content:center; align-items:center}
+
+    h1{margin:0 0 6px; font-size:22px; letter-spacing:0.2px}
+    .sub{margin:0 0 18px; color:var(--muted); font-size:13px}
+    .address{font-size:15px; line-height:1.5; color:#222}
+    .address p{margin:8px 0}
+
+    .label{display:inline-block; margin-top:14px; font-weight:600; color:var(--maroon)}
+    .phone{display:inline-flex; gap:10px; align-items:center; margin-top:14px; font-weight:700}
+    .phone a{color:var(--maroon); text-decoration:none}
+
+    /* right column */
+    .right .logo{width:110px; height:110px; border-radius:12px; background:rgba(255,255,255,0.06); display:flex; align-items:center; justify-content:center; font-weight:700; font-size:20px}
+    .right h2{margin:16px 0 6px; font-size:20px}
+    .right p{margin:0; opacity:0.95}
+
+    /* Hindi styling */
+    .hindi{font-family: 'Noto Sans Devanagari', 'Mangal', sans-serif}
+
+    /* location button */
+    .map-btn{
+      display:inline-block;
+      margin-top:14px;
+      padding:10px 18px;
+      background:var(--maroon);
+      color:#fff;
+      text-decoration:none;
+      border-radius:8px;
+      font-weight:600;
+    }
+    .map-btn:hover{background:#5a0505}
+
+    /* embedded map */
+    .map-box{
+      margin-top:18px;
+      border-radius:10px;
+      overflow:hidden;
+      border:1px solid #ccc;
+    }
+
+    /* responsive */
+    @media (max-width:880px){
+      .card{grid-template-columns:1fr;}
+      .right{order:-1}
+    }
   </style>
+  <!-- Fonts -->
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&family=Noto+Sans+Devanagari:wght@400;600&display=swap" rel="stylesheet">
 </head>
 <body>
-  <!-- CONTACT CARD -->
-  <section id="contact" class="card" aria-labelledby="contact-title">
-    <div class="head">
-      <h1 id="contact-title" class="title">संपर्क करें</h1>
-      <p class="sub">कॉल या व्हाट्सएप पर तुरंत बात करें — एक टैप में खुल जाएगा।</p>
+  <div class="wrap">
+    <div class="card" role="region" aria-label="Contact card for Shree Radha Credit Co-operative Society">
+      <div class="left">
+        <h1>Shree Radha Credit Co-operative Society Ltd.</h1>
+        <p class="sub">Member-centric · Community Banking · Trusted in Dhar</p>
+
+        <div class="address">
+          <strong>Address (English):</strong>
+          <p>In front of Chatrawas, Gram Panchayat Gujri<br>
+          Gujri (Dhamnod), Sub-district Dharmapuri<br>
+          District Dhar - 454552<br>
+          Madhya Pradesh
+          </p>
+
+          <strong class="label">Contact</strong>
+          <p class="phone"><span>📞</span><a href="tel:+918370022176">+91 83700 22176</a></p>
+
+          <!-- Map Button -->
+          <a class="map-btn" target="_blank" 
+             href="https://www.google.com/maps/place/Gujri,+Madhya+Pradesh/@22.3209,75.5034,17z/data=!4m6!3m5!1s0x39626840c02ac517:0x2193204ae715a6ed!8m2!3d22.3209488!4d75.5051041!16s%2Fg%2F1tf7qjm4?hl=en&entry=ttu">
+             📍 View on Google Maps
+          </a>
+        </div>
+
+        <hr style="margin:20px 0; border:none; border-top:1px solid #f0f0f0">
+
+        <div class="address hindi">
+          <strong>पता (हिन्दी):</strong>
+          <p>छात्रावास, ग्राम पंचायत के सामने, गुजरी<br>
+          गुजरी (धामनोद), उप-खंड धर्मापुरी<br>
+          ज़िला धार - 454552<br>
+          मध्य प्रदेश
+          </p>
+
+          <strong class="label">संपर्क</strong>
+          <p class="phone"><span>📞</span><a href="tel:+918370022176" style="color:var(--maroon);">+91 83700 22176</a></p>
+        </div>
+
+        <!-- Embedded Google Map -->
+        <div class="map-box">
+          <iframe 
+            src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3680.510508463515!2d75.5034!3d22.3209!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x39626840c02ac517%3A0x2193204ae715a6ed!2sGujri%2C%20Madhya%20Pradesh!5e0!3m2!1sen!2sin!4v1693740000000!5m2!1sen!2sin" 
+            width="100%" height="220" style="border:0;" allowfullscreen="" loading="lazy">
+          </iframe>
+        </div>
+      </div>
+
+      <aside class="right">
+        <div class="logo">SRCCS</div>
+        <h2>Shree Radha</h2>
+        <p style="font-weight:600; margin-bottom:10px">Credit Co-operative Society Ltd.</p>
+        <p style="text-align:center; max-width:260px; font-size:14px; opacity:0.95">In front of Chatrawas, Gram Panchayat Gujri<br>Gujri (Dhamnod), Dhar - 454552</p>
+
+        <div style="margin-top:18px; text-align:center">
+          <a href="tel:+918370022176" style="display:inline-block; padding:10px 18px; border-radius:8px; background:var(--white); color:var(--maroon); text-decoration:none; font-weight:700">Call: +91 83700 22176</a>
+        </div>
+      </aside>
     </div>
-
-    <div class="grid">
-      <!-- ✅ CLICK TO CALL -->
-      <a class="btn call" href="tel:+918370022176" aria-label="Call now">
-        <span class="icons" aria-hidden="true">📞</span>
-        <span>
-          <strong>अभी कॉल करें</strong>
-          <small>+91 83700 22176</small>
-        </span>
-      </a>
-
-      <!-- ✅ WHATSAPP CHAT -->
-      <a class="btn wa" href="https://wa.me/918370022176" target="_blank" rel="noopener" aria-label="WhatsApp chat">
-        <span class="icons" aria-hidden="true">💬</span>
-        <span>
-          <strong>WhatsApp पर चैट</strong>
-          <small>एक संदेश लिखें और भेजें</small>
-        </span>
-      </a>
-
-      <!-- ✅ SMS -->
-      <a class="btn sms" href="sms:+918370022176" aria-label="Send SMS">
-        <span class="icons" aria-hidden="true">✉️</span>
-        <span>
-          <strong>SMS भेजें</strong>
-          <small>डिफॉल्ट मैसेजिंग खुलेगा</small>
-        </span>
-      </a>
-    </div>
-
-    <footer>
-      <div>कार्य समय: सोम–शनि 10am–6pm</div>
-      <div class="copy">Shree Radha Credit Co-operative Society</div>
-    </footer>
-  </section>
-
-  <!-- Floating quick-actions (mobile friendly) -->
-  <div class="floating">
-    <a class="fab fab-wa" href="https://wa.me/918370022176" target="_blank" rel="noopener" title="WhatsApp">💬</a>
-    <a class="fab fab-call" href="tel:+918370022176" title="Call Now">📞</a>
   </div>
 </body>
 </html>
