@@ -320,7 +320,7 @@ button:hover{
 </div>
 </div>
 <script>
-const API="https://script.google.com/macros/s/AKfycbxQd7KMxMrFXRblw-rk4pB57vKJ3Azk_rJR5-vIBNjiDf_BGdjh1z7IvdRk2SbriOih/exec";
+const API="https://script.google.com/macros/s/AKfycbzqDsUlXt1-CY5oeA9BbgA_ZRQJnauZMuakCgWe8GodV1dFoirGWQz9a-LIKuAyHxlU/exec";
 
 const account=document.getElementById("account");
 const name=document.getElementById("name");
@@ -363,29 +363,44 @@ window.onload=()=>{
 };
 
 /* ================= FETCH NAME ================= */
-account.addEventListener("input",()=>{
-  clearTimeout(t);
-  t=setTimeout(fetchName,400);
-});
-
 function fetchName(){
-  let acc=account.value.trim();
-  if(!acc)return;
 
-  if(!acc.startsWith("SRC")) acc="SRC"+acc;
-  account.value=acc;
+  let acc = account.value.trim();
+  if(!acc) return;
 
-  fetch(`${API}?fn=getName&account=${acc}`)
-    .then(r=>r.json())
-    .then(d=>{
-      if(d.success){
-        name.value=d.name;
-        tick.style.display="block";
-      }else{
-        name.value="";
-        tick.style.display="none";
-      }
-    });
+  if(!acc.startsWith("SRC")){
+    acc = "SRC" + acc;
+  }
+
+  account.value = acc;
+
+  fetch(API,{
+    method:"POST",
+    headers:{
+      "Content-Type":"application/json"
+    },
+    body:JSON.stringify({
+      action:"getName",
+      account:acc
+    })
+  })
+  .then(res=>res.json())
+  .then(data=>{
+
+    if(data.success){
+      name.value = data.name;
+      tick.style.display = "block";
+    }else{
+      name.value = "";
+      tick.style.display = "none";
+    }
+
+  })
+  .catch(()=>{
+    name.value="";
+    tick.style.display="none";
+  });
+
 }
 
 /* ================= HISTORY ================= */
@@ -508,5 +523,6 @@ function saveEntry(){
 </script>
 </body>
 </html>
+
 
 
