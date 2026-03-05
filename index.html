@@ -5,22 +5,7 @@
 <title>SRCCS – Agent Transaction Entry</title>
 <meta name="viewport" content="width=device-width,initial-scale=1">
 
-<script>
-/* ===== PASSWORD PROTECTION ===== */
-const PAGE_PASSWORD = "1234";   // 👉 Yaha apna password set kare
-
-(function(){
-  const entered = prompt("Enter Password to Open Page:");
-  if(entered !== PAGE_PASSWORD){
-    document.write("<h2 style='text-align:center;margin-top:100px;color:red;'>Access Denied ❌</h2>");
-    throw new Error("Wrong Password");
-  }
-})();
-</script>
-
 <style>
-/* ===== AAPKA PURA ORIGINAL CSS YAHA SAME RAHEGA ===== */
-
 :root{
   --primary:#1a237e;
   --primary-dark:#0d154f;
@@ -30,237 +15,74 @@ const PAGE_PASSWORD = "1234";   // 👉 Yaha apna password set kare
   --danger:#c62828;
 }
 
-*{
-  box-sizing:border-box;
-  font-family:Arial, Helvetica, sans-serif;
-}
+*{box-sizing:border-box;font-family:Arial, Helvetica, sans-serif}
 
-body{
-  margin:0;
-  background:var(--bg);
-  font-size:13px;
-}
+body{margin:0;background:var(--bg);font-size:13px}
 
-.app{
-  max-width:420px;
-  margin:20px auto;
-  padding:12px;
-}
+.app{max-width:420px;margin:20px auto;padding:12px}
 
-.card{
-  background:#fff;
-  border:1px solid var(--border);
-  padding:16px;
-}
+.card{background:#fff;border:1px solid var(--border);padding:16px}
 
-/* ===== HEADER ===== */
-h2{
-  text-align:center;
-  margin:0 0 4px;
-  font-size:16px;
-  font-weight:bold;
-  color:var(--primary);
-}
+h2{text-align:center;margin:0 0 4px;font-size:16px;color:var(--primary)}
 
-p{
-  text-align:center;
-  margin:0 0 14px;
-  font-size:11px;
-  color:#444;
-}
+p{text-align:center;margin:0 0 14px;font-size:11px;color:#444}
 
-/* ===== FORM ===== */
-label{
-  font-size:11px;
-  font-weight:bold;
-  margin-top:10px;
-  display:block;
-}
+label{font-size:11px;font-weight:bold;margin-top:10px;display:block}
 
 input,select{
-  width:100%;
-  padding:7px 6px;
-  margin-top:4px;
-  font-size:13px;
-  border:1px solid var(--primary);
-  background:#fff;
+width:100%;
+padding:7px 6px;
+margin-top:4px;
+font-size:13px;
+border:1px solid var(--primary)
 }
 
-input[readonly]{
-  background:#f3f4f9;
-}
+input[readonly]{background:#f3f4f9}
 
 button{
-  width:100%;
-  margin-top:16px;
-  padding:9px;
-  font-size:13px;
-  font-weight:bold;
-  background:var(--primary);
-  color:#fff;
-  border:none;
-  cursor:pointer;
+width:100%;
+margin-top:16px;
+padding:9px;
+font-size:13px;
+font-weight:bold;
+background:var(--primary);
+color:#fff;
+border:none;
+cursor:pointer
 }
 
-button:hover{
-  background:var(--primary-dark);
-}
+button:hover{background:var(--primary-dark)}
 
-/* ===== MESSAGE ===== */
-.msg{
-  text-align:center;
-  font-size:12px;
-  font-weight:bold;
-  margin-top:8px;
-}
+.msg{text-align:center;font-size:12px;font-weight:bold;margin-top:8px}
 
-/* SUCCESS MESSAGE */
-.msg-success{
-  display:flex;
-  align-items:center;
-  justify-content:center;
-  gap:6px;
-  color:var(--success);
-  font-size:13px;
-  font-weight:bold;
-  margin-top:10px;
-}
-
-.msg-success span{
-  font-size:16px;
-}
+.ok{color:var(--success)}
 .err{color:var(--danger)}
 
-/* ===== LOCATION ===== */
-.loc-ok{
-  color:var(--success);
-  font-size:11px;
-  font-weight:bold;
-}
-
-.loc-wait{
-  color:var(--danger);
-  font-size:11px;
-  font-weight:bold;
-}
-
-/* ===== VERIFY TICK ===== */
 .verify-wrap{position:relative}
 
 .verify-tick{
-  position:absolute;
-  right:6px;
-  top:55%;
-  transform:translateY(-50%);
-  font-size:11px;
-  color:var(--success);
-  font-weight:bold;
-  display:none;
+position:absolute;
+right:6px;
+top:55%;
+transform:translateY(-50%);
+font-size:11px;
+color:var(--success);
+display:none
 }
 
-/* ===== HISTORY ===== */
-.history-box{
-  margin-top:16px;
-  border-top:1px solid var(--border);
-  padding-top:10px;
-}
+.history-box{margin-top:16px;border-top:1px solid var(--border);padding-top:10px}
 
-.history-box h4{
-  text-align:center;
-  font-size:13px;
-  margin-bottom:8px;
-  color:var(--primary);
-}
+.history-item{border-bottom:1px solid var(--border);padding:6px 0;font-size:12px}
 
-.total-box{
-  text-align:center;
-  font-size:12px;
-  font-weight:bold;
-  margin-bottom:8px;
-}
+.h-credit{color:var(--success);font-weight:bold}
+.h-debit{color:var(--danger);font-weight:bold}
 
-.history-item{
-  border-bottom:1px solid var(--border);
-  padding:6px 0;
-  font-size:12px;
-}
-
-.h-credit{
-  color:var(--success);
-  font-weight:bold;
-}
-
-.h-debit{
-  color:var(--danger);
-  font-weight:bold;
-}
-
-.small{
-  font-size:10px;
-  color:#555;
-}
-
-/* LOADER */
-/* OVERLAY */
-.loader-overlay{
-  position:fixed;
-  top:0;
-  left:0;
-  width:100%;
-  height:100%;
-  background:rgba(255,255,255,0.8);
-  display:none;
-  align-items:center;
-  justify-content:center;
-  z-index:9999;
-}
-
-/* CENTER BOX */
-#loaderContent{
-  display:flex;
-  align-items:center;
-  justify-content:center;
-  flex-direction:column;
-}
-
-/* SPINNER */
-.loader{
-  border:6px solid #f3f3f3;
-  border-top:6px solid #1a237e;
-  border-radius:50%;
-  width:60px;
-  height:60px;
-  animation:spin 1s linear infinite;
-}
-
-@keyframes spin{
-  0%{transform:rotate(0deg);}
-  100%{transform:rotate(360deg);}
-}
-
-/* SUCCESS TICK */
-.success-tick{
-  display:none;
-  font-size:70px;
-  color:#2e7d32;
-  font-weight:bold;
-  animation:pop 0.3s ease-in-out;
-}
-
-@keyframes pop{
-  0%{transform:scale(0);}
-  100%{transform:scale(1);}
-}
+.small{font-size:10px;color:#555}
 </style>
 </head>
 
 <body>
-  <div class="loader-overlay" id="loader">
-  <div id="loaderContent">
-    <div class="loader" id="spinner"></div>
-    <div class="success-tick" id="successTick">✔</div>
-  </div>
-</div>
+
 <div class="app">
 <div class="card">
 
@@ -272,14 +94,14 @@ button:hover{
 
 <label>Customer Name</label>
 <div class="verify-wrap">
-  <input id="name" readonly>
-  <div id="tick" class="verify-tick">✔ Verified</div>
+<input id="name" readonly>
+<div id="tick" class="verify-tick">✔ Verified</div>
 </div>
 
 <label>Transaction Type</label>
 <select id="type">
-  <option value="credit">Credit</option>
-  <option value="debit">Debit</option>
+<option value="credit">Credit</option>
+<option value="debit">Debit</option>
 </select>
 
 <label>Amount</label>
@@ -287,41 +109,38 @@ button:hover{
 
 <label>Agent ID</label>
 <select id="agent">
-  <option value="">Select</option>
-   <option>AR4957</option>
-  <option>SH7333</option>
-  <option>KA4564</option>
-  <option>JE2659</option>
-  <option>SRCCS1432</option>
+<option value="">Select</option>
+<option>SH7333</option>
+<option>KA4564</option>
+<option>JE2659</option>
+<option>SRCCS1432</option>
 </select>
 
 <label>Mode</label>
 <select id="mode">
-  <option>Cash</option>
-  <option>UPI</option>
-  <option>Cheque</option>
+<option>Cash</option>
+<option>UPI</option>
+<option>Cheque</option>
 </select>
-
-<label>Location Status</label>
-<div id="locStatus" class="loc-wait">Detecting location…</div>
 
 <label>Remarks</label>
 <input id="remarks">
 
-<button id="saveBtn" onclick="saveEntry()">SAVE ENTRY</button>
+<button onclick="saveEntry()">SAVE ENTRY</button>
 <div id="msg" class="msg"></div>
 
 <div class="history-box">
-  <h4>Transaction History (Last 24 Hours)</h4>
-  <div class="total-box" id="totalBox">Total Collection: ₹0</div>
-  <div id="historyList"></div>
+<h4>Transaction History (Last 24 Hours)</h4>
+<div id="totalBox">Total Collection: ₹0</div>
+<div id="historyList"></div>
 </div>
 
 </div>
 </div>
+
 <script>
-const API="https://script.google.com/macros/s/AKfycbxyR7Pwb_IpWbdwc0nj252zBZxEkXAGviBVoh595fYw1YXzQIgteWGmdt5gX3qpWJ7p/exec";
-const EXPIRY=24*60*60*1000;
+
+const API="https://script.google.com/macros/s/AKfycbwCyrMFcS_ve6xlPbBLPTAv4Cvxega50CQwXWc9dPrY84ItQLWhWe7pJ6igk0fmNo5b/exec";
 
 const account=document.getElementById("account");
 const name=document.getElementById("name");
@@ -334,182 +153,83 @@ const mode=document.getElementById("mode");
 const remarks=document.getElementById("remarks");
 const historyList=document.getElementById("historyList");
 const totalBox=document.getElementById("totalBox");
-const locStatus=document.getElementById("locStatus");
 
 let t=null;
-let CURRENT_LOCATION=null;
 
-/* LOCATION */
-function initLocation(){
-  const cached=localStorage.getItem("SRCCS_LOCATION");
-  if(cached){
-    CURRENT_LOCATION=cached;
-    locStatus.innerText="Location detected ✔";
-    locStatus.className="loc-ok";
-  }
+/* NAME FETCH */
 
-  if(navigator.geolocation){
-    navigator.geolocation.getCurrentPosition(
-      pos=>{
-        const fresh=`Lat:${pos.coords.latitude.toFixed(6)}, Lng:${pos.coords.longitude.toFixed(6)}`;
-        CURRENT_LOCATION=fresh;
-        localStorage.setItem("SRCCS_LOCATION",fresh);
-        locStatus.innerText="Location detected ✔";
-        locStatus.className="loc-ok";
-      }
-    );
-  }
-}
-
-window.onload=()=>{
-  initLocation();
-  showHistory();
-};
-
-/* ACCOUNT INPUT */
 account.addEventListener("input",()=>{
-  clearTimeout(t);
-  t=setTimeout(fetchName,400);
+clearTimeout(t);
+t=setTimeout(fetchName,400);
 });
 
-/* NAME FETCH (POST METHOD – CORS SAFE) */
-  function fetchName(){
+function fetchName(){
 
-  let acc = account.value.trim();
-  if(!acc) return;
+let acc=account.value.trim();
+if(!acc) return;
 
-  if(!acc.startsWith("SRC")) acc="SRC"+acc;
-  account.value=acc;
+if(!acc.startsWith("SRC")) acc="SRC"+acc;
+account.value=acc;
 
-  fetch(API+"?fn=getName&account="+acc)
-  .then(r=>r.json())
-  .then(d=>{
-    if(d.success){
-      name.value=d.name;
-      tick.style.display="block";
-    }else{
-      name.value="";
-      tick.style.display="none";
-    }
-  })
-  .catch(()=>{
-    name.value="";
-    tick.style.display="none";
-  });
-
+fetch(API+"?fn=getName&account="+acc)
+.then(r=>r.json())
+.then(d=>{
+if(d.success){
+name.value=d.name;
+tick.style.display="block";
+}else{
+name.value="";
+tick.style.display="none";
 }
-/* CLEAN OLD HISTORY */
-function cleanOld(){
-  let h=JSON.parse(localStorage.getItem("SRCCS_HISTORY")||"{}");
-  let now=Date.now();
-
-  Object.keys(h).forEach(a=>{
-    h[a]=h[a].filter(x=>now-x.time<EXPIRY);
-    if(!h[a].length) delete h[a];
-  });
-
-  localStorage.setItem("SRCCS_HISTORY",JSON.stringify(h));
-}
-
-/* SHOW HISTORY */
-function showHistory(){
-
-  cleanOld();
-
-  let h=JSON.parse(localStorage.getItem("SRCCS_HISTORY")||"{}");
-  let all=[],total=0;
-
-  Object.values(h).forEach(arr=>{
-    arr.forEach(x=>{
-      all.push(x);
-      if(x.type==="credit") total+=Number(x.amount);
-    });
-  });
-
-  all.sort((a,b)=>b.time-a.time);
-
-  historyList.innerHTML="";
-
-  all.forEach(x=>{
-    historyList.innerHTML+=`
-      <div class="history-item">
-        <b>${x.name}</b> (${x.account})<br>
-        <span class="${x.type==="credit"?"h-credit":"h-debit"}">
-          ${x.type.toUpperCase()} ₹${x.amount}
-        </span><br>
-        <span class="small">${new Date(x.time).toLocaleString()} | Agent:${x.agent}</span>
-      </div>`;
-  });
-
-  totalBox.innerText="Total Collection: ₹"+total;
+});
 
 }
 
 /* SAVE ENTRY */
+
 function saveEntry(){
 
-  if(!CURRENT_LOCATION){
-    msg.innerText="❌ Location not detected";
-    msg.className="msg err";
-    return;
-  }
+if(!account.value||!amount.value||!agent.value){
 
-  if(!account.value||!amount.value||!agent.value){
-    msg.innerText="❌ Required fields missing";
-    msg.className="msg err";
-    return;
-  }
+msg.innerText="❌ Required fields missing";
+msg.className="msg err";
+return;
 
-  const data=new URLSearchParams();
-  data.append("action","addLedger");
-  data.append("account",account.value);
-  data.append("amount",amount.value);
-  data.append("type",type.value);
-  data.append("agent",agent.value);
-  data.append("mode",mode.value);
-  data.append("remarks",remarks.value);
-  data.append("location",CURRENT_LOCATION);
+}
 
-  fetch(API,{
-    method:"POST",
-    body:data
-  })
-  .then(()=>{
+const data=new URLSearchParams();
 
-    let h=JSON.parse(localStorage.getItem("SRCCS_HISTORY")||"{}");
+data.append("action","addLedger");
+data.append("account",account.value);
+data.append("amount",amount.value);
+data.append("type",type.value);
+data.append("agent",agent.value);
+data.append("mode",mode.value);
+data.append("remarks",remarks.value);
+data.append("location","Agent");
 
-    if(!h[account.value]) h[account.value]=[];
+fetch(API,{
+method:"POST",
+body:data
+})
+.then(()=>{
 
-    h[account.value].push({
-      account:account.value,
-      name:name.value,
-      amount:amount.value,
-      type:type.value,
-      agent:agent.value,
-      mode:mode.value,
-      remarks:remarks.value,
-      time:Date.now()
-    });
+msg.innerText="✔ Entry Saved";
+msg.className="msg ok";
 
-    localStorage.setItem("SRCCS_HISTORY",JSON.stringify(h));
+setTimeout(()=>location.reload(),800);
 
-    msg.innerText="✔ Entry Saved";
-    msg.className="msg ok";
+})
+.catch(()=>{
 
-    setTimeout(()=>location.reload(),800);
+msg.innerText="❌ Network error";
+msg.className="msg err";
 
-  })
-  .catch(()=>{
-    msg.innerText="❌ Network error";
-    msg.className="msg err";
-  });
+});
 
-}</script>
+}
+
+</script>
+
 </body>
 </html>
-
-
-
-
-
-
