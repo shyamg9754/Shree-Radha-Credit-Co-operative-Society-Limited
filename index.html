@@ -320,7 +320,7 @@ button:hover{
 </div>
 </div>
 <script>
-const API="https://script.google.com/macros/s/AKfycbx45r7ipXSffucf5gdiswBhTsV7yHVJjQ0QdiqtErCBbT1fhw60WAEKpC3mLO2vg6Vf/exec";
+const API="https://script.google.com/macros/s/AKfycbxyR7Pwb_IpWbdwc0nj252zBZxEkXAGviBVoh595fYw1YXzQIgteWGmdt5gX3qpWJ7p/exec";
 const EXPIRY=24*60*60*1000;
 
 const account=document.getElementById("account");
@@ -373,24 +373,15 @@ account.addEventListener("input",()=>{
 });
 
 /* NAME FETCH (POST METHOD – CORS SAFE) */
-function fetchName(){
+  function fetchName(){
 
-  let acc=account.value.trim();
-  if(!acc)return;
+  let acc = account.value.trim();
+  if(!acc) return;
 
   if(!acc.startsWith("SRC")) acc="SRC"+acc;
   account.value=acc;
 
-  fetch(API,{
-    method:"POST",
-    headers:{
-      "Content-Type":"application/json"
-    },
-    body:JSON.stringify({
-      action:"getName",
-      account:acc
-    })
-  })
+  fetch(API+"?fn=getName&account="+acc)
   .then(r=>r.json())
   .then(d=>{
     if(d.success){
@@ -407,7 +398,6 @@ function fetchName(){
   });
 
 }
-
 /* CLEAN OLD HISTORY */
 function cleanOld(){
   let h=JSON.parse(localStorage.getItem("SRCCS_HISTORY")||"{}");
@@ -470,23 +460,20 @@ function saveEntry(){
     return;
   }
 
+  const data=new URLSearchParams();
+  data.append("action","addLedger");
+  data.append("account",account.value);
+  data.append("amount",amount.value);
+  data.append("type",type.value);
+  data.append("agent",agent.value);
+  data.append("mode",mode.value);
+  data.append("remarks",remarks.value);
+  data.append("location",CURRENT_LOCATION);
+
   fetch(API,{
     method:"POST",
-    headers:{
-      "Content-Type":"application/json"
-    },
-    body:JSON.stringify({
-      action:"addLedger",
-      account:account.value,
-      amount:amount.value,
-      type:type.value,
-      agent:agent.value,
-      mode:mode.value,
-      remarks:remarks.value,
-      location:CURRENT_LOCATION
-    })
+    body:data
   })
-  .then(r=>r.json())
   .then(()=>{
 
     let h=JSON.parse(localStorage.getItem("SRCCS_HISTORY")||"{}");
@@ -517,10 +504,10 @@ function saveEntry(){
     msg.className="msg err";
   });
 
-}
-</script>
+}</script>
 </body>
 </html>
+
 
 
 
