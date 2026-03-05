@@ -320,7 +320,8 @@ button:hover{
 </div>
 </div>
 <script>
-const API="https://script.google.com/macros/s/AKfycbzqDsUlXt1-CY5oeA9BbgA_ZRQJnauZMuakCgWe8GodV1dFoirGWQz9a-LIKuAyHxlU/exec";
+const API="https://script.google.com/macros/s/AKfycbxuWtWOZ02G8qgn3ghIrqxbpvRlt6uMTEiO0IlDA5_KePadcfXHiBxqIWGYCExKTZZMVg/exec";
+const EXPIRY=24*60*60*1000;
 
 const account=document.getElementById("account");
 const name=document.getElementById("name");
@@ -334,24 +335,27 @@ const remarks=document.getElementById("remarks");
 const historyList=document.getElementById("historyList");
 const totalBox=document.getElementById("totalBox");
 const locStatus=document.getElementById("locStatus");
-const saveBtn=document.getElementById("saveBtn");
-const loader=document.getElementById("loader");
 
 let t=null;
 let CURRENT_LOCATION=null;
 
-/* ================= LOCATION ================= */
+/* LOCATION */
 function initLocation(){
+  const cached=localStorage.getItem("SRCCS_LOCATION");
+  if(cached){
+    CURRENT_LOCATION=cached;
+    locStatus.innerText="Location detected ✔";
+    locStatus.className="loc-ok";
+  }
+
   if(navigator.geolocation){
     navigator.geolocation.getCurrentPosition(
       pos=>{
-        CURRENT_LOCATION=`Lat:${pos.coords.latitude.toFixed(6)}, Lng:${pos.coords.longitude.toFixed(6)}`;
+        const fresh=`Lat:${pos.coords.latitude.toFixed(6)}, Lng:${pos.coords.longitude.toFixed(6)}`;
+        CURRENT_LOCATION=fresh;
+        localStorage.setItem("SRCCS_LOCATION",fresh);
         locStatus.innerText="Location detected ✔";
         locStatus.className="loc-ok";
-      },
-      ()=>{
-        locStatus.innerText="❌ Location required";
-        locStatus.className="loc-wait";
       }
     );
   }
@@ -362,17 +366,20 @@ window.onload=()=>{
   showHistory();
 };
 
-/* ================= FETCH NAME ================= */
+/* ACCOUNT INPUT */
+account.addEventListener("input",()=>{
+  clearTimeout(t);
+  t=setTimeout(fetchName,400);
+});
+
+/* NAME FETCH (POST METHOD – CORS SAFE) */
 function fetchName(){
 
-  let acc = account.value.trim();
-  if(!acc) return;
+  let acc=account.value.trim();
+  if(!acc)return;
 
-  if(!acc.startsWith("SRC")){
-    acc = "SRC" + acc;
-  }
-
-  account.value = acc;
+  if(!acc.startsWith("SRC")) acc="SRC"+acc;
+  account.value=acc;
 
   fetch(API,{
     method:"POST",
@@ -384,17 +391,15 @@ function fetchName(){
       account:acc
     })
   })
-  .then(res=>res.json())
-  .then(data=>{
-
-    if(data.success){
-      name.value = data.name;
-      tick.style.display = "block";
+  .then(r=>r.json())
+  .then(d=>{
+    if(d.success){
+      name.value=d.name;
+      tick.style.display="block";
     }else{
-      name.value = "";
-      tick.style.display = "none";
+      name.value="";
+      tick.style.display="none";
     }
-
   })
   .catch(()=>{
     name.value="";
@@ -403,8 +408,24 @@ function fetchName(){
 
 }
 
-/* ================= HISTORY ================= */
+/* CLEAN OLD HISTORY */
+function cleanOld(){
+  let h=JSON.parse(localStorage.getItem("SRCCS_HISTORY")||"{}");
+  let now=Date.now();
+
+  Object.keys(h).forEach(a=>{
+    h[a]=h[a].filter(x=>now-x.time<EXPIRY);
+    if(!h[a].length) delete h[a];
+  });
+
+  localStorage.setItem("SRCCS_HISTORY",JSON.stringify(h));
+}
+
+/* SHOW HISTORY */
 function showHistory(){
+
+  cleanOld();
+
   let h=JSON.parse(localStorage.getItem("SRCCS_HISTORY")||"{}");
   let all=[],total=0;
 
@@ -416,6 +437,7 @@ function showHistory(){
   });
 
   all.sort((a,b)=>b.time-a.time);
+
   historyList.innerHTML="";
 
   all.forEach(x=>{
@@ -430,20 +452,14 @@ function showHistory(){
   });
 
   totalBox.innerText="Total Collection: ₹"+total;
+
 }
 
-
-/* ================= SAVE ENTRY ================= */
+/* SAVE ENTRY */
 function saveEntry(){
 
   if(!CURRENT_LOCATION){
     msg.innerText="❌ Location not detected";
-    msg.className="msg err";
-    return;
-  }
-
-  if(!name.value){
-    msg.innerText="❌ Account not verified";
     msg.className="msg err";
     return;
   }
@@ -454,18 +470,11 @@ function saveEntry(){
     return;
   }
 
-  const spinner=document.getElementById("spinner");
-  const successTick=document.getElementById("successTick");
-
-  loader.style.display="flex";
-  spinner.style.display="block";
-  successTick.style.display="none";
-  saveBtn.disabled=true;
-
   fetch(API,{
     method:"POST",
-    mode:"cors",
-    headers:{"Content-Type":"application/json"},
+    headers:{
+      "Content-Type":"application/json"
+    },
     body:JSON.stringify({
       action:"addLedger",
       account:account.value,
@@ -477,17 +486,13 @@ function saveEntry(){
       location:CURRENT_LOCATION
     })
   })
+  .then(r=>r.json())
   .then(()=>{
 
-    /* SPINNER HIDE */
-    spinner.style.display="none";
-
-    /* SHOW GREEN TICK */
-    successTick.style.display="block";
-
-    /* LOCAL HISTORY UPDATE */
     let h=JSON.parse(localStorage.getItem("SRCCS_HISTORY")||"{}");
+
     if(!h[account.value]) h[account.value]=[];
+
     h[account.value].push({
       account:account.value,
       name:name.value,
@@ -498,31 +503,25 @@ function saveEntry(){
       remarks:remarks.value,
       time:Date.now()
     });
+
     localStorage.setItem("SRCCS_HISTORY",JSON.stringify(h));
 
-    setTimeout(()=>{
-      loader.style.display="none";
-      saveBtn.disabled=false;
+    msg.innerText="✔ Entry Saved";
+    msg.className="msg ok";
 
-      account.value="";
-      name.value="";
-      amount.value="";
-      remarks.value="";
-      tick.style.display="none";
-      showHistory();
-    },1200);
+    setTimeout(()=>location.reload(),800);
 
   })
   .catch(()=>{
-    loader.style.display="none";
-    saveBtn.disabled=false;
     msg.innerText="❌ Network error";
     msg.className="msg err";
   });
+
 }
 </script>
 </body>
 </html>
+
 
 
 
